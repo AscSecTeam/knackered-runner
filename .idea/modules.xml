@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Knackered-Engine.iml" filepath="$PROJECT_DIR$/.idea/Knackered-Engine.iml" />
+      <module fileurl="file://C:/wamp/www/Pawnee/.idea/Pawnee.iml" filepath="C:/wamp/www/Pawnee/.idea/Pawnee.iml" />
     </modules>
   </component>
 </project>
