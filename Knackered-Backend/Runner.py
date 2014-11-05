@@ -6,6 +6,7 @@
 #Specify plugin directory path here
 PLUGIN_DIRECTORY = "/usr/lib/nagios/plugins/"
 
+from subprocess import call
 
 class Runner():
 
@@ -46,6 +47,9 @@ class Runner():
             result = 0  # RUN CHECK HERE
 
         elif aService.getType() == 'http':
+            #Welp i just realized i need to add in what to look for in the http check TODO
+            command = self.plugindir + 'check_http -H ' + aService.getAddress()
+            print call(command)
             result = 0  # RUN CHECK HERE
 
         elif aService.getType() == 'https':
