@@ -26,13 +26,25 @@ class Runner():
         # so if we need to pass things such as http status codes as a result, we can do that.
 
         if aService.getType() == 'dns':
-            result = 0  # RUN CHECK HERE
+            #Welp i just realized i need to add in what to look for in the dns check TODO
+            #Temp using google.com
+            command = self.plugindir + 'check_dns google.com' + aService.getAddress()
+            status = call(command)
+            if status.find('OK') != -1:
+                result = 1
+            else:
+                result = 0
 
         elif aService.getType() == 'smtp':
             result = 0  # RUN CHECK HERE
 
         elif aService.getType() == 'icmp':
-            result = 0  # RUN CHECK HERE
+            command = self.plugindir + 'check_icmp ' + aService.getAddress()
+            status = call(command)
+            if status.find('OK') != -1:
+                result = 1
+            else:
+                result = 0
 
         elif aService.getType() == 'imap':
             result = 0  # RUN CHECK HERE
@@ -48,12 +60,21 @@ class Runner():
 
         elif aService.getType() == 'http':
             #Welp i just realized i need to add in what to look for in the http check TODO
-            command = self.plugindir + 'check_http -H ' + aService.getAddress()
-            print call(command)
-            result = 0  # RUN CHECK HERE
+            command = self.plugindir + 'check_http -I ' + aService.getAddress()
+            status = call(command)
+            if status.find('HTTP OK') != -1:
+                result = 1
+            else:
+                result = 0
 
         elif aService.getType() == 'https':
-            result = 0  # RUN CHECK HERE
+            #Welp i just realized i need to add in what to look for in the https check TODO
+            command = self.plugindir + 'check_http -S -I ' + aService.getAddress()
+            status = call(command)
+            if status.find('HTTP OK') != -1:
+                result = 1
+            else:
+                result = 0
 
         if result == 9001:
             print "Service with id " + str(aService.getId()) + " has failed to find an appropriate check type"
