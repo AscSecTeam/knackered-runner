@@ -100,7 +100,7 @@ class DataAccess():
             teamsList.append(Team(int(id[0])))
 
         #we have the teams! Let's fill them with services.
-        self.cursor.execute("SELECT * FROM services LEFT JOIN servicelogins ON services.id = serviceLogins.serviceId")
+        self.cursor.execute("SELECT * FROM services LEFT JOIN servicelogins ON services.id = servicelogins.serviceId")
         for (id, teamId, address, type, loginId, serviceId, username, password) in self.cursor:
 
             #Does the team have a login?
