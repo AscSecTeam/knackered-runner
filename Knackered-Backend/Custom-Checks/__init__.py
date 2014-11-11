@@ -1,0 +1,1 @@
+#This directory intended for any checks in which the nagios-plugins checks are insufficient.

@@ -13,21 +13,21 @@ from Team import Team
 DATABASE_USERNAME = "root"      #
 DATABASE_PASSWORD = ""          #
 DATABASE_ADDRESS = "localhost"  #
-DATABASE_NAME = "Scoring"       #
+DATABASE_NAME = "scoring"       #
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  #
 
 DATABASE_SCHEMA = OrderedDict()  # Order of table creation is important
                                  # Foreign keys will not function correctly unless tables are created in this order
 
 DATABASE_SCHEMA['TEAMS'] = """
-    CREATE TABLE Teams (
+    CREATE TABLE teams (
       id INT PRIMARY KEY
     )
 """
 
 #TYPE field denormalized for simplicity. (Could make serviceType table if desired.)
 DATABASE_SCHEMA['SERVICES'] = """
-    CREATE TABLE Services (
+    CREATE TABLE services (
       id INT PRIMARY KEY  AUTO_INCREMENT,
       teamId INT,
       address VARCHAR(50),
@@ -37,7 +37,7 @@ DATABASE_SCHEMA['SERVICES'] = """
 """
 
 DATABASE_SCHEMA['TEAMLOGINS'] = """
-    CREATE TABLE TeamLogins (
+    CREATE TABLE teamLogins (
       id INT PRIMARY KEY AUTO_INCREMENT,
       teamId INT,
       username varchar(100),
@@ -47,7 +47,7 @@ DATABASE_SCHEMA['TEAMLOGINS'] = """
 """
 
 DATABASE_SCHEMA['CHECKS'] = """
-    CREATE TABLE Checks (
+    CREATE TABLE checks (
       id INT PRIMARY KEY AUTO_INCREMENT,
       serviceId INT,
       round INT,
@@ -57,7 +57,7 @@ DATABASE_SCHEMA['CHECKS'] = """
 """
 
 DATABASE_SCHEMA['SERVICELOGINS'] = """
-    CREATE TABLE ServiceLogins (
+    CREATE TABLE serviceLogins (
       id INT PRIMARY KEY AUTO_INCREMENT,
       serviceId INT,
       username varchar(100),
@@ -132,22 +132,6 @@ class DataAccess():
         self.cursor.close()
         self.connection.close()
 
-    #create the database
-    def createDB(self):
-        try:
-            self.cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(self.dbname))
-            self.connection.commit()
-
-        except mysql.connector.Error as err:
-            #if the connection is broken, rage-quit the program
-            print """
-                Can't connect to the MySQL Database.
-                Ensure service is started. (service mysql start)
-                Ensure database user info is correct (EDIT DataAccess.py)
-            """
-            print("Failed creating database: {}".format(err))
-            exit(1)
-
     #connect to the database
     def establishConnection(self):
         try:
@@ -167,6 +151,22 @@ class DataAccess():
                 """
                 print(err)
                 exit(1)
+
+    #create the database
+    def createDB(self):
+        try:
+            self.cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(self.dbname))
+            self.connection.commit()
+
+        except mysql.connector.Error as err:
+            #if the connection is broken, rage-quit the program
+            print """
+                Can't connect to the MySQL Database.
+                Ensure service is started. (service mysql start)
+                Ensure database user info is correct (EDIT DataAccess.py)
+            """
+            print("Failed creating database: {}".format(err))
+            exit(1)
 
     def createTables(self):
         for tablename, table in self.schema.items():

@@ -3,10 +3,11 @@
 #This class intended to receive check requests
 #and use the ./scripts directory to make the checks and then return results of these checks.
 
+import subprocess
+
 #Specify plugin directory path here
 PLUGIN_DIRECTORY = "/usr/lib/nagios/plugins/"
 
-from subprocess import call
 
 class Runner():
 
@@ -16,65 +17,105 @@ class Runner():
         print "Runner initialized."
 
     def checkService(self, aService):
-        result = 9001  # default return value. if we see this in the checks table,
-                       # there is a service that is not accounted for by a check
-                       # Or a reason that result is not being reassigned. Panic regardless.
-
-        # Checks should be called from below.
-        # the result variables below are binary representations of the check's score.
-        # The database supports integer results though,
-        # so if we need to pass things such as http status codes as a result, we can do that.
+        result = 9001
+        """ 9001 is the default return value. if we see this in the checks table,
+        there is a service that is not accounted for by a check
+        or a reason that result is not being reassigned. Panic regardless.
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Checks should be called from below.
+        the result variables below are binary representations of the check's score.
+        The database supports integer results though,
+        so if we need to pass things such as http status codes as a result, we can do that. """
 
         if aService.getType() == 'dns':
-            #Welp i just realized i need to add in what to look for in the dns check TODO
+            #TODO Compare with expected result
             #Temp using google.com
-            command = self.plugindir + 'check_dns google.com' + aService.getAddress()
-            status = call(command)
-            if status.find('OK') != -1:
+            command = self.plugindir + 'check_dns'
+            args = 'google.com ' + aService.getAddress()
+            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            status = run.stdout.read()
+            if status.find('OK') != -1:  # Include expected result comparison
                 result = 1
+                print aService.getType() + ' OK ON ' + aService.getAddress()
             else:
                 result = 0
+                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'smtp':
-            result = 0  # RUN CHECK HERE
+            command = self.plugindir + 'check_smtp'
+            args = aService.getAddress()
+            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            status = run.stdout.read()
+            if status.find('SMTP OK') != -1:
+                result = 1
+                print aService.getType() + ' OK ON ' + aService.getAddress()
+            else:
+                result = 0
+                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'icmp':
-            command = self.plugindir + 'check_icmp ' + aService.getAddress()
-            status = call(command)
+            command = self.plugindir + 'check_icmp'
+            args = aService.getAddress()
+            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            status = run.stdout.read()
             if status.find('OK') != -1:
                 result = 1
+                print aService.getType() + ' OK ON ' + aService.getAddress()
             else:
                 result = 0
-
-        elif aService.getType() == 'imap':
-            result = 0  # RUN CHECK HERE
-
-        elif aService.getType() == 'pop3':
-            result = 0  # RUN CHECK HERE
+                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'ssh':
-            result = 0  # RUN CHECK HERE
+            #TODO Compare with expected result
+            command = self.plugindir + 'check_ssh'
+            args = aService.getAddress()
+            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            status = run.stdout.read()
+            if status.find('SSH OK') != -1:  # Include expected result comparison
+                result = 1
+                print aService.getType() + ' OK ON ' + aService.getAddress()
+            else:
+                result = 0
+                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'ftp':
-            result = 0  # RUN CHECK HERE
+            #TODO Compare with expected result
+            command = self.plugindir + 'check_ftp'
+            args = '-H ' + aService.getAddress()
+            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            status = run.stdout.read()
+            if status.find('FTP OK') != -1:
+                result = 1
+                print aService.getType() + ' OK ON ' + aService.getAddress()
+            else:
+                result = 0
+                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'http':
-            #Welp i just realized i need to add in what to look for in the http check TODO
-            command = self.plugindir + 'check_http -I ' + aService.getAddress()
-            status = call(command)
+            #TODO Compare with expected result
+            command = self.plugindir + 'check_http'
+            args = '-I ' + aService.getAddress()
+            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            status = run.stdout.read()
             if status.find('HTTP OK') != -1:
                 result = 1
+                print aService.getType() + ' OK ON ' + aService.getAddress()
             else:
                 result = 0
+                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'https':
-            #Welp i just realized i need to add in what to look for in the https check TODO
-            command = self.plugindir + 'check_http -S -I ' + aService.getAddress()
-            status = call(command)
+            #TODO Compare with expected result
+            command = self.plugindir + 'check_http'
+            args = '-S -I ' + aService.getAddress()
+            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            status = run.stdout.read()
             if status.find('HTTP OK') != -1:
                 result = 1
+                print aService.getType() + ' OK ON ' + aService.getAddress()
             else:
                 result = 0
+                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
 
         if result == 9001:
             print "Service with id " + str(aService.getId()) + " has failed to find an appropriate check type"

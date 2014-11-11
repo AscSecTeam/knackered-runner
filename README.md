@@ -1,7 +1,7 @@
 A Work in Progress
 ===============
 The software is not yet working as desired. Development is in progress.
-///////
+
 
 Knackered
 ================
@@ -26,3 +26,17 @@ Run Knackered-Backend/main.py and tables will be generated automatically.
 
 From there, use the web interface to configure Knackered-Backend for your competition.
 
+
+Checks
+=============
+The HTTP and HTTPS checks get the page and look for an expected string.
+
+The DNS check queries the specified server for an expected result.
+
+The FTP check does a banner-grab and looks for an expected string. In the future, this should probably modified to actually login and upload/download.
+
+The SSH check returns the SSH server version. In the future, this should probably be modified to actually login and cat a file.
+
+The ICMP check is pretty self explanatory. It pings the server.
+
+The SMTP check establishes a connection, does a HELO and a QUIT. In the future, this should probably be modified to actually login and send mail.
