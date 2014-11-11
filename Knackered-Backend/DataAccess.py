@@ -32,7 +32,7 @@ DATABASE_SCHEMA['SERVICES'] = """
       teamId INT,
       address VARCHAR(50),
       type VARCHAR(5),
-      FOREIGN KEY (teamId) REFERENCES Teams(id)
+      FOREIGN KEY (teamId) REFERENCES teams(id)
     )
 """
 
@@ -42,7 +42,7 @@ DATABASE_SCHEMA['TEAMLOGINS'] = """
       teamId INT,
       username varchar(100),
       password varchar(100),
-      FOREIGN KEY (teamId) REFERENCES Teams(id)
+      FOREIGN KEY (teamId) REFERENCES teams(id)
     )
 """
 
@@ -52,7 +52,7 @@ DATABASE_SCHEMA['CHECKS'] = """
       serviceId INT,
       round INT,
       result INT,
-      FOREIGN KEY (serviceId) REFERENCES Services(id)
+      FOREIGN KEY (serviceId) REFERENCES services(id)
     )
 """
 
@@ -62,7 +62,7 @@ DATABASE_SCHEMA['SERVICELOGINS'] = """
       serviceId INT,
       username varchar(100),
       password varchar(100),
-      FOREIGN KEY (serviceId) REFERENCES Services(id)
+      FOREIGN KEY (serviceId) REFERENCES services(id)
     )
 """
 
