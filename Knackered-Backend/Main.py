@@ -29,7 +29,10 @@ def check():
 
     #start the new round of checks
     runner.incrementRound()
-    #print "Running check round #" + str(runner.getRound())
+
+    #take note of the round now
+    #if the current round does not finish before next one starts, we will enter the wrong round
+    round = runner.getRound()
 
     database = DataAccess()
 
@@ -40,6 +43,6 @@ def check():
             runner.checkService(service)
 
     #after all teams are checked, deposit into DB (whole round at once)
-    database.addCheckRound(teams, runner.getRound())
+    database.addCheckRound(teams, round)
 
 check()
