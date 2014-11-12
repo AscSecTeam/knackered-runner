@@ -37,10 +37,10 @@ class Runner():
             status = run.stdout.read()
             if status.find('OK') != -1:  # Include expected result comparison
                 result = 1
-                print aService.getType() + ' OK ON ' + aService.getAddress()
+                print aService.getType() + '   OK ON       ' + aService.getAddress()
             else:
                 result = 0
-                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
+                print aService.getType() + '   CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'smtp':
             command = self.plugindir + 'check_smtp'
@@ -49,10 +49,10 @@ class Runner():
             status = run.stdout.read()
             if status.find('SMTP OK') != -1:
                 result = 1
-                print aService.getType() + ' OK ON ' + aService.getAddress()
+                print aService.getType() + '  OK ON       ' + aService.getAddress()
             else:
                 result = 0
-                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
+                print aService.getType() + '  CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'icmp':
             command = self.plugindir + 'check_icmp'
@@ -61,10 +61,10 @@ class Runner():
             status = run.stdout.read()
             if status.find('OK') != -1:
                 result = 1
-                print aService.getType() + ' OK ON ' + aService.getAddress()
+                print aService.getType() + '  OK ON       ' + aService.getAddress()
             else:
                 result = 0
-                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
+                print aService.getType() + '  CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'ssh':
             #TODO Compare with expected result
@@ -74,10 +74,10 @@ class Runner():
             status = run.stdout.read()
             if status.find('SSH OK') != -1:  # Include expected result comparison
                 result = 1
-                print aService.getType() + ' OK ON ' + aService.getAddress()
+                print aService.getType() + '   OK ON       ' + aService.getAddress()
             else:
                 result = 0
-                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
+                print aService.getType() + '   CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'ftp':
             #TODO Compare with expected result
@@ -88,10 +88,10 @@ class Runner():
             status = run.stdout.read()
             if status.find('FTP OK') != -1:
                 result = 1
-                print aService.getType() + ' OK ON ' + aService.getAddress()
+                print aService.getType() + '   OK ON       ' + aService.getAddress()
             else:
                 result = 0
-                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
+                print aService.getType() + '   CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'http':
             #TODO Compare with expected result
@@ -102,10 +102,10 @@ class Runner():
             status = run.stdout.read()
             if status.find('HTTP OK') != -1:
                 result = 1
-                print aService.getType() + ' OK ON ' + aService.getAddress()
+                print aService.getType() + '  OK ON       ' + aService.getAddress()
             else:
                 result = 0
-                print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
+                print aService.getType() + '  CRITICAL ON ' + aService.getAddress()
 
         elif aService.getType() == 'https':
             #TODO Compare with expected result
@@ -117,7 +117,7 @@ class Runner():
             status = run.stdout.read()
             if status.find('HTTP OK') != -1:
                 result = 1
-                print aService.getType() + ' OK ON ' + aService.getAddress()
+                print aService.getType() + ' OK ON       ' + aService.getAddress()
             else:
                 result = 0
                 print aService.getType() + ' CRITICAL ON ' + aService.getAddress()
