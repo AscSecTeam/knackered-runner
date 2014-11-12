@@ -31,8 +31,9 @@ class Runner():
             #TODO Compare with expected result
             #Temp using google.com
             command = self.plugindir + 'check_dns'
-            args = 'google.com ' + aService.getAddress()
-            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            argone = 'google.com'
+            argtwo = aService.getAddress()
+            run = subprocess.Popen([command, argone, argtwo], stdout=subprocess.PIPE)
             status = run.stdout.read()
             if status.find('OK') != -1:  # Include expected result comparison
                 result = 1
@@ -81,8 +82,9 @@ class Runner():
         elif aService.getType() == 'ftp':
             #TODO Compare with expected result
             command = self.plugindir + 'check_ftp'
-            args = '-H ' + aService.getAddress()
-            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            argone = '-H'
+            argtwo = aService.getAddress()
+            run = subprocess.Popen([command, argone, argtwo], stdout=subprocess.PIPE)
             status = run.stdout.read()
             if status.find('FTP OK') != -1:
                 result = 1
@@ -94,8 +96,9 @@ class Runner():
         elif aService.getType() == 'http':
             #TODO Compare with expected result
             command = self.plugindir + 'check_http'
-            args = '-I ' + aService.getAddress()
-            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            argone = '-I'
+            argtwo = aService.getAddress()
+            run = subprocess.Popen([command, argone, argtwo], stdout=subprocess.PIPE)
             status = run.stdout.read()
             if status.find('HTTP OK') != -1:
                 result = 1
@@ -107,8 +110,10 @@ class Runner():
         elif aService.getType() == 'https':
             #TODO Compare with expected result
             command = self.plugindir + 'check_http'
-            args = '-S -I ' + aService.getAddress()
-            run = subprocess.Popen([command, args], stdout=subprocess.PIPE)
+            argone = '-S'
+            argtwo = '-I'
+            argthree = aService.getAddress()
+            run = subprocess.Popen([command, argone, argtwo, argthree], stdout=subprocess.PIPE)
             status = run.stdout.read()
             if status.find('HTTP OK') != -1:
                 result = 1
