@@ -42,4 +42,4 @@ class ChartGenerator():
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        shutil.move('/var/www/html/chart.svg', directory + 'chart_' + check_round + '.svg')
+        shutil.move('/var/www/html/chart.svg', directory + 'chart_' + str(check_round) + '.svg')
