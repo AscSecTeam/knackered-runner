@@ -3,6 +3,8 @@
 #this class takes aggregated check data and generates an SVG chart using pygal 
 
 import pygal
+import os
+import shutil
 
     
 class ChartGenerator():
@@ -31,5 +33,13 @@ class ChartGenerator():
             chart.add('Team ' + str(bar_count) + ' score', [{'value': score, 'label': 'Team ' + str(bar_count)}])
             bar_count += 1
 
+        self.make_chart_backup(check_round)
         #we have a chart! put it somewhere accessible.
         chart.render_to_file(save_location)
+
+    def make_chart_backup(self, check_round):
+        directory = '/var/www/html/chart_files/backups/'
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        shutil.move('/var/www/html/chart.svg', directory + 'chart_' + check_round + '.svg')

@@ -21,48 +21,50 @@ DATABASE_SCHEMA = OrderedDict()  # Order of table creation is important
 
 DATABASE_SCHEMA['TEAMS'] = """
     CREATE TABLE teams (
-      id INT PRIMARY KEY
+        id INT PRIMARY KEY
     )
 """
 
 #TYPE field denormalized for simplicity. (Could make serviceType table if desired.)
 DATABASE_SCHEMA['SERVICES'] = """
     CREATE TABLE services (
-      id INT PRIMARY KEY  AUTO_INCREMENT,
-      teamId INT,
-      address VARCHAR(50),
-      type VARCHAR(5),
-      FOREIGN KEY (teamId) REFERENCES teams(id)
+        id INT PRIMARY KEY  AUTO_INCREMENT,
+        teamId INT,
+        address VARCHAR(50),
+        type VARCHAR(5),
+        FOREIGN KEY (teamId) REFERENCES teams(id)
     )
 """
 
 DATABASE_SCHEMA['TEAMLOGINS'] = """
     CREATE TABLE teamlogins (
-      id INT PRIMARY KEY AUTO_INCREMENT,
-      teamId INT,
-      username varchar(100),
-      password varchar(100),
-      FOREIGN KEY (teamId) REFERENCES teams(id)
-    )
+        teamId INT,
+        user_id int(11) NOT NULL AUTO_INCREMENT,
+        user_name varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+        user_password_hash varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+        PRIMARY KEY (user_id),
+        UNIQUE KEY user_name (user_name),
+        FOREIGN KEY (teamId) REFERENCES teams(id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='user data';
 """
 
 DATABASE_SCHEMA['CHECKS'] = """
     CREATE TABLE checks (
-      id INT PRIMARY KEY AUTO_INCREMENT,
-      serviceId INT,
-      round INT,
-      result INT,
-      FOREIGN KEY (serviceId) REFERENCES services(id)
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        serviceId INT,
+        round INT,
+        result INT,
+        FOREIGN KEY (serviceId) REFERENCES services(id)
     )
 """
 
 DATABASE_SCHEMA['SERVICELOGINS'] = """
     CREATE TABLE servicelogins (
-      id INT PRIMARY KEY AUTO_INCREMENT,
-      serviceId INT,
-      username varchar(100),
-      password varchar(100),
-      FOREIGN KEY (serviceId) REFERENCES services(id)
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        serviceId INT,
+        username varchar(100),
+        password varchar(100),
+        FOREIGN KEY (serviceId) REFERENCES services(id)
     )
 """
 
@@ -179,3 +181,7 @@ class DataAccess():
                     print "Table " + tablename + " already exists, woohoo"
                 else:
                     print err.msg
+
+    def getScores(self):
+        #Sample data for now
+        return [1,2,3,4,5,6,7,8,9,10]

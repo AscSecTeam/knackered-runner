@@ -9,6 +9,7 @@ import threading
 
 from DataAccess import DataAccess
 from Runner import Runner
+from ChartGenerator import ChartGenerator
 
 #Check runner object - runs checks for services with checkService() method
 #Returns integer 1/0 for check pass/fail
@@ -20,6 +21,8 @@ runner = Runner()
 #Program will exit here if we can't connect to MySQL
 testDatabase = DataAccess()
 testDatabase.createTables()
+
+chartGen = ChartGenerator()
 
 
 # We want the checks to run once per minute for each team.
@@ -44,5 +47,9 @@ def check():
 
     #after all teams are checked, deposit into DB (whole round at once)
     database.addCheckRound(teams, round)
+
+    scores = database.getScores()
+
+    chartGen.generate_chart('/var/www/html/chart.svg', round, scores)
 
 check()
