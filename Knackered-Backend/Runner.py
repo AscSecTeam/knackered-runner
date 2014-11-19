@@ -11,8 +11,8 @@ PLUGIN_DIRECTORY = "/usr/lib/nagios/plugins/"
 
 class Runner():
 
-    def __init__(self):
-        self.round = 0
+    def __init__(self, check_round):
+        self.round = check_round
         self.plugindir = PLUGIN_DIRECTORY
         print "Runner initialized."
 

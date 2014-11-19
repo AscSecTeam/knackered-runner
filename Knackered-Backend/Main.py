@@ -6,15 +6,23 @@
 #This class connects the check-running scripts to the data-access class.
 
 import threading
+import sys
+
+check_round = 0
+if len(sys.argv) > 1 and sys.argv[1].isdigit():
+    check_round = sys.argv[1]
+    print check_round
 
 from DataAccess import DataAccess
 from Runner import Runner
 from ChartGenerator import ChartGenerator
 
+
+
 #Check runner object - runs checks for services with checkService() method
 #Returns integer 1/0 for check pass/fail
 #Default return is 9001 - if we see this in the database there is an issue with the checks
-runner = Runner()
+runner = Runner(check_round)
 
 #Data access object - connects to MySQL database
 #SELECTs service information, INSERTs check results
