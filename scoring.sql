@@ -1,12 +1,52 @@
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+CREATE DATABASE scoring;
 
-INSERT INTO `services` (`id`, `teamId`, `address`, `type`) VALUES
+USE scoring;
+
+CREATE TABLE teams (
+    id INT PRIMARY KEY
+);
+  
+CREATE TABLE services (
+    id INT PRIMARY KEY  AUTO_INCREMENT,e
+    teamId INT,
+    address VARCHAR(50),
+    type VARCHAR(5),
+    FOREIGN KEY (teamId) REFERENCES teams(id)
+);
+    
+
+CREATE TABLE teamlogins (
+    teamId INT,
+    user_id int(11) NOT NULL AUTO_INCREMENT,
+    user_name varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+    user_password_hash varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+    PRIMARY KEY (user_id),
+    UNIQUE KEY user_name (user_name),
+    FOREIGN KEY (teamId) REFERENCES teams(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='user data';
+
+CREATE TABLE checks (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    serviceId INT,
+    round INT,
+    result INT,
+    FOREIGN KEY (serviceId) REFERENCES services(id)
+);
+
+CREATE TABLE servicelogins (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    serviceId INT,
+    username varchar(100),
+    password varchar(100),
+    FOREIGN KEY (serviceId) REFERENCES services(id)
+);
+
+INSERT INTO teams(id) VALUES (0),(1);
+
+INSERT INTO teamlogins (teamId, user_name, user_password_hash) VALUES (0,'default','$2y$10$8pggvF7cqtrrmEM4rl8c0.joU3vcQBiN1vdZ2ILzQ8sBhIqjPd682');
+
+INSERT INTO services (id, teamId, address, type) VALUES
   (21, 1, '10.10.10.10', 'http'),
   (22, 1, 'google.com', 'http'),
   (23, 1, '10.10.10.10', 'https'),
