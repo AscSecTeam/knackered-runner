@@ -8,7 +8,7 @@ CREATE TABLE teams (
 );
   
 CREATE TABLE services (
-    id INT PRIMARY KEY  AUTO_INCREMENT,e
+    id INT PRIMARY KEY AUTO_INCREMENT,
     teamId INT,
     address VARCHAR(50),
     type VARCHAR(5),
