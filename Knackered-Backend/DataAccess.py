@@ -108,7 +108,7 @@ class DataAccess():
 
             #find the right team to insert into
             for team in teamsList:
-                if team.getId() == id:
+                if team.getId() == teamId:
 
                     #Does the team have a login?
                     if username is None:
