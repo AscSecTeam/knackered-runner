@@ -106,11 +106,15 @@ class DataAccess():
         self.cursor.execute("SELECT * FROM services LEFT JOIN servicelogins ON services.id = servicelogins.serviceId")
         for (id, teamId, address, type, loginId, serviceId, username, password) in self.cursor:
 
-            #Does the team have a login?
-            if username is None:
-                teamsList[teamId - 1].addService(id, type, address, "default9001", "default9001")
-            else:
-                teamsList[teamId - 1].addService(id, type, address, username, password)
+            #find the right team to insert into
+            for team in teamsList:
+                if team.getId() == id:
+
+                    #Does the team have a login?
+                    if username is None:
+                        team.addService(id, type, address, "default9001", "default9001")
+                    else:
+                        team.addService(id, type, address, username, password)
 
         return teamsList
 
