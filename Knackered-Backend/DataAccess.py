@@ -6,6 +6,7 @@ import mysql.connector
 from mysql.connector import errorcode
 from collections import OrderedDict
 from Team import Team
+from operator import methodcaller
 
 
 #Configure database connection here
@@ -131,8 +132,6 @@ class DataAccess():
         print query
         self.cursor.execute(query)
         self.connection.commit()
-        self.cursor.close()
-        self.connection.close()
 
     #connect to the database
     def establishConnection(self):
@@ -183,5 +182,28 @@ class DataAccess():
                     print err.msg
 
     def getScores(self):
-        #Sample data for now
-        return [1,2,3,4,5,6,7,8,9,10]
+        teams = []
+
+        #ENSURE we're using the right database
+        self.cursor.execute("USE " + self.dbname + ";")
+
+        #Execute query
+        query = "SELECT services.teamId, checks.serviceId, COUNT(checks.id) FROM checks INNER JOIN services ON checks.serviceId = services.id WHERE result = 1 GROUP BY serviceId;"
+        self.cursor.execute(query)
+
+        for (teamId, serviceId, count) in self.cursor:
+            team_exists = False
+            for team in teams:
+                if team.getId() == teamId:
+                    team.addToScore(count)
+                    team_exists = True
+
+            if not team_exists:
+                new_team = Team(teamId)
+                new_team.addToScore(count)
+                teams.append(new_team)
+
+        self.cursor.close()
+        self.connection.close()
+
+        return teams

@@ -20,7 +20,7 @@ class ChartGenerator():
         config.label_font_size = 24
         config.major_label_font_size = 24
 
-    def generate_chart(self, save_location, check_round,  score_array):
+    def generate_chart(self, save_location, check_round,  teams):
         #first, set the title dynamically
         self.config.title = 'Scoring as of round ' + str(check_round)
         
@@ -28,10 +28,10 @@ class ChartGenerator():
         chart = pygal.Bar(self.config)
         
         #add each team's score to chart        
-        bar_count = 1
-        for score in score_array:
+        for team in teams:
+            bar_count = team.getId()
+            score = team.getScore()
             chart.add('Team ' + str(bar_count) + ' score', [{'value': score, 'label': 'Team ' + str(bar_count)}])
-            bar_count += 1
 
         self.make_chart_backup(check_round)
         #we have a chart! put it somewhere accessible.

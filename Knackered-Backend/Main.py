@@ -56,8 +56,8 @@ def check():
     #after all teams are checked, deposit into DB (whole round at once)
     database.addCheckRound(teams, round)
 
-    scores = database.getScores()
+    teams = database.getScores()
 
-    chartGen.generate_chart('/var/www/html/chart.svg', round, scores)
+    chartGen.generate_chart('/var/www/html/chart.svg', round, teams)
 
 check()

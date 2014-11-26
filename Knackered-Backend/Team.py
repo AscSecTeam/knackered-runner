@@ -10,6 +10,7 @@ class Team():
     def __init__(self, aId):
         self.id = aId
         self.services = []
+        self.score = 0
 
     def addService(self, id, type, url, username, password):
         aService = Service(id, type, url, username, password)
@@ -20,3 +21,9 @@ class Team():
 
     def getId(self):
         return self.id
+
+    def getScore(self):
+        return self.score
+
+    def addToScore(self, score):
+        self.score += score
