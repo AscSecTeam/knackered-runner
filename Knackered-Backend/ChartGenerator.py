@@ -9,9 +9,11 @@ import shutil
     
 class ChartGenerator():
         
-    def __init__(self):
+    def __init__(self, location):
         self.config = pygal.Config()
         self.custom_config(self.config)
+        self.chart_location = location + 'chart.svg'
+        self.backup_location = location + 'chart_files/backups/'
         
     def custom_config(self, config):
         config.show_legend = False
@@ -20,7 +22,7 @@ class ChartGenerator():
         config.label_font_size = 24
         config.major_label_font_size = 24
 
-    def generate_chart(self, save_location, check_round,  teams):
+    def generate_chart(self, check_round,  teams):
         #first, set the title dynamically
         self.config.title = 'Scoring as of round ' + str(check_round)
         
@@ -35,11 +37,10 @@ class ChartGenerator():
 
         self.make_chart_backup(check_round)
         #we have a chart! put it somewhere accessible.
-        chart.render_to_file(save_location)
+        chart.render_to_file(self.chart_location)
 
     def make_chart_backup(self, check_round):
-        directory = '/var/www/html/chart_files/backups/'
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        if not os.path.exists(self.backup_location):
+            os.makedirs(self.backup_location)
 
-        shutil.move('/var/www/html/chart.svg', directory + 'chart_' + str(check_round) + '.svg')
+        shutil.move(self.chart_location, self.backup_location + 'chart_' + str(check_round) + '.svg')

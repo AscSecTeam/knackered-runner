@@ -17,7 +17,8 @@ from DataAccess import DataAccess
 from Runner import Runner
 from ChartGenerator import ChartGenerator
 
-
+#modify webroot here
+webroot = '/var/www/html/'
 
 #Check runner object - runs checks for services with checkService() method
 #Returns integer 1/0 for check pass/fail
@@ -30,7 +31,7 @@ runner = Runner(check_round)
 testDatabase = DataAccess()
 testDatabase.createTables()
 
-chartGen = ChartGenerator()
+chartGen = ChartGenerator(WEBROOT)
 
 
 # We want the checks to run once per minute for each team.
@@ -58,6 +59,6 @@ def check():
 
     teams = database.getScores()
 
-    chartGen.generate_chart('/var/www/html/chart.svg', round, teams)
+    chartGen.generate_chart(round, teams)
 
 check()
