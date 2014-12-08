@@ -1,8 +1,3 @@
-A Work in Progress
-===============
-The software is not yet working as desired. Development is in progress.
-
-
 Knackered
 ================
 The Knackered Engine is a security competition scoring engine.
@@ -18,11 +13,13 @@ Installation and Setup
 ============
 Ensure MySQL 5+, Apache2, PHP 5.3+, and nagios-plugins are installed (and, if necessary, running)
 
-Configure the database information at the top of Knackered-Backend/DataAccess.py
+Configure the database information at the top of Knackered-Backend/DataAccess.py, and in the web interface's config/db.php file.
 
 If nagios-plugins aren't in /usr/lib/nagios/plugins/, specify the directory at the top of Knackered-Backend/Runner.py
 
-Run Knackered-Backend/main.py and tables will be generated automatically.
+If your webroot isn't /var/www/html/, configure that in Knackered-Backend/Main.py.
+
+scoring.sql contains the necessary MySQL database along with a test team.
 
 From there, use the web interface to configure Knackered-Backend for your competition.
 
@@ -40,3 +37,12 @@ The SSH check returns the SSH server version. In the future, this should probabl
 The ICMP check is pretty self explanatory. It pings the server.
 
 The SMTP check establishes a connection, does a HELO and a QUIT. In the future, this should probably be modified to actually login and send mail.
+
+
+Credits
+============
+Nagios-Plugins
+
+A modified version of Panique's minimal php-login project: https://github.com/panique/php-login-minimal
+
+Griffith Chaffee's cyberengine used at ISTS competitions https://github.com/RITSPARSA/cyberengine
