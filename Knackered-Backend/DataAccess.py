@@ -1,24 +1,18 @@
-#DataAccess.py
-
-#This class serves to connect to the MySQL database.
+# This class serves to connect to the MySQL database.
 
 import mysql.connector
 from mysql.connector import errorcode
 from collections import OrderedDict
 from Team import Team
-from operator import methodcaller
 
-
-#Configure database connection here
-#_____________________________  #
-DATABASE_USERNAME = "root"      #
-DATABASE_PASSWORD = ""          #
-DATABASE_ADDRESS = "localhost"  #
-DATABASE_NAME = "scoring"       #
-#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  #
+# Configure database connection here
+DATABASE_USERNAME = "root"
+DATABASE_PASSWORD = ""
+DATABASE_ADDRESS = "localhost"
+DATABASE_NAME = "scoring"
 
 DATABASE_SCHEMA = OrderedDict()  # Order of table creation is important
-                                 # Foreign keys will not function correctly unless tables are created in this order
+# Foreign keys will not function correctly unless tables are created in this order
 
 DATABASE_SCHEMA['TEAMS'] = """
     CREATE TABLE teams (
@@ -26,7 +20,7 @@ DATABASE_SCHEMA['TEAMS'] = """
     )
 """
 
-#TYPE field denormalized for simplicity. (Could make serviceType table if desired.)
+# TYPE field de-normalized for simplicity. (Could make serviceType table if desired.)
 DATABASE_SCHEMA['SERVICES'] = """
     CREATE TABLE services (
         id INT PRIMARY KEY  AUTO_INCREMENT,
@@ -73,81 +67,84 @@ DATABASE_SCHEMA['SERVICELOGINS'] = """
 class DataAccess():
 
     def __init__(self):
-        #Store configured settings
+        # Store configured settings
         self.username = DATABASE_USERNAME
         self.password = DATABASE_PASSWORD
         self.address = DATABASE_ADDRESS
         self.dbname = DATABASE_NAME
         self.schema = DATABASE_SCHEMA
 
-        #init database connection using settings above
+        # init database connection using settings above
         self.connection = mysql.connector.connect(user=self.username,
                                                   password=self.password,
                                                   host=self.address)
         self.cursor = self.connection.cursor()
 
-        #connect to the database
-        #create the DB if it does not exist
-        self.establishConnection()
+        # connect to the database
+        # create the DB if it does not exist
+        self.establish_connection()
 
-    #Connects to DB and returns list of teams
-    def getTeams(self):
-        teamsList = []
+    # Connects to DB and returns list of teams
+    def get_teams(self):
+        teams_list = []
 
-        #ENSURE we're using the right database
+        # ensure we're using the right database
         self.cursor.execute("USE " + self.dbname + ";")
 
-        #Get teams and create teamslist entries
+        # Get teams and create teamslist entries
         self.cursor.execute("SELECT * FROM teams;")
-        for (id) in self.cursor:
-            teamsList.append(Team(int(id[0])))
+        for team_id in self.cursor:
+            teams_list.append(Team(int(team_id[0])))
 
-        #we have the teams! Let's fill them with services.
+        # we have the teams! Let's fill them with services.
         self.cursor.execute("SELECT * FROM services LEFT JOIN servicelogins ON services.id = servicelogins.serviceId")
-        for (id, teamId, address, type, loginId, serviceId, username, password) in self.cursor:
+        for (service_id, team_id, address, service_type, loginId, serviceId, username, password) in self.cursor:
 
-            #find the right team to insert into
-            for team in teamsList:
-                if team.getId() == teamId:
+            # find the right team to insert into
+            for team in teams_list:
+                if team.id == team_id:
 
-                    #Does the team have a login?
+                    # Does the team have a login?
                     if username is None:
-                        team.addService(id, type, address, "default9001", "default9001")
+                        team.addService(service_id, service_type, address, "default9001", "default9001")
                     else:
-                        team.addService(id, type, address, username, password)
+                        team.addService(service_id, service_type, address, username, password)
 
-        return teamsList
+        return teams_list
 
-    #Connects to DB and inserts a round's check results
-    def addCheckRound(self, teams, checkRound):
+    # Connects to DB and inserts a round's check results
+    def add_check_round(self, teams, check_round):
 
-        #ENSURE we're using the right database
+        # ensure we're using the right database
         self.cursor.execute("USE " + self.dbname + ";")
 
         query = "INSERT INTO checks (serviceId,round,result) VALUES"  # To be continued!
 
-        #Loop through services and prepare query for insertion
+        query_addition = ""
+        # Loop through services and prepare query for insertion
         for team in teams:
-            for service in team.getServices():
-                addition = ' (' + str(service.getId()) + "," + str(checkRound) + "," + str(service.getCheck()) + '),'
-                query += addition
+            for service in team.services:
+                query_addition += ' (' + str(service.getId()) + "," + str(check_round) + "," + str(service.result) + '),'
 
-        query = query[:-1] + ";"
-        print query
-        self.cursor.execute(query)
-        self.connection.commit()
+        # If there's no teams, an invalid query will be generated
+        if query_addition != "":
+            query += query_addition
+            query = query[:-1] + ";"
+            print query
+            self.cursor.execute(query)
+            self.connection.commit()
 
-    #connect to the database
-    def establishConnection(self):
+    # connect to the database
+    def establish_connection(self):
         try:
             self.connection.database = self.dbname
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_BAD_DB_ERROR:
-                self.createDB()
+                self.create_db()
                 print "Created database."
                 self.connection.database = self.dbname
             else:
-                #if the connection is broken, rage-quit the program
+                # if the connection is broken, rage-quit the program
                 print """
                     Can't connect to the MySQL Database.
                     Ensure service is started on appropriate host. (service mysql start)
@@ -157,14 +154,14 @@ class DataAccess():
                 print(err)
                 exit(1)
 
-    #create the database
-    def createDB(self):
+    # create the database
+    def create_db(self):
         try:
             self.cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(self.dbname))
             self.connection.commit()
 
         except mysql.connector.Error as err:
-            #if the connection is broken, rage-quit the program
+            # if the connection is broken, rage-quit the program
             print """
                 Can't connect to the MySQL Database.
                 Ensure service is started. (service mysql start)
@@ -173,38 +170,40 @@ class DataAccess():
             print("Failed creating database: {}".format(err))
             exit(1)
 
-    def createTables(self):
-        for tablename, table in self.schema.items():
+    def create_tables(self):
+        for table_name, table in self.schema.items():
             try:
                 self.cursor.execute(table)
                 self.connection.commit()
-                print "Created table " + tablename
+                print "Created table " + table_name
             except mysql.connector.Error as err:
                 if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                    print "Table " + tablename + " already exists, woohoo"
+                    print "Table " + table_name + " already exists, woohoo"
                 else:
                     print err.msg
 
-    def getScores(self):
+    def get_scores(self):
         teams = []
 
-        #ENSURE we're using the right database
+        # ensure we're using the right database
         self.cursor.execute("USE " + self.dbname + ";")
 
-        #Execute query
-        query = "SELECT services.teamId, checks.serviceId, COUNT(checks.id) FROM checks INNER JOIN services ON checks.serviceId = services.id WHERE result = 1 GROUP BY serviceId;"
+        # Execute query
+        query = """SELECT services.teamId, checks.serviceId, COUNT(checks.id)
+                   FROM checks INNER JOIN services ON checks.serviceId = services.id
+                   WHERE result = 1 GROUP BY serviceId;"""
         self.cursor.execute(query)
 
-        for (teamId, serviceId, count) in self.cursor:
+        for (team_id, service_id, count) in self.cursor:
             team_exists = False
             for team in teams:
-                if team.getId() == teamId:
-                    team.addToScore(count)
+                if team.id == team_id:
+                    team.add_to_score(count)
                     team_exists = True
 
             if not team_exists:
-                new_team = Team(teamId)
-                new_team.addToScore(count)
+                new_team = Team(team_id)
+                new_team.add_to_score(count)
                 teams.append(new_team)
 
         self.cursor.close()

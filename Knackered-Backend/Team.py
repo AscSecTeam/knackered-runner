@@ -1,29 +1,17 @@
-#team.py
-
-#Class for storing info about each team and the location of its services.
+# Class for storing info about each team and the location of its services.
 
 from Service import Service
 
 
-class Team():
+class Team:
 
-    def __init__(self, aId):
-        self.id = aId
+    def __init__(self, team_id):
+        self.id = team_id
         self.services = []
         self.score = 0
 
-    def addService(self, id, type, url, username, password):
-        aService = Service(id, type, url, username, password)
-        self.services.append(aService)
+    def add_service(self, service_id, service_type, url, username, password):
+        self.services.append(Service(service_id, service_type, url, username, password))
 
-    def getServices(self):
-        return self.services
-
-    def getId(self):
-        return self.id
-
-    def getScore(self):
-        return self.score
-
-    def addToScore(self, score):
+    def add_to_score(self, score):
         self.score += score

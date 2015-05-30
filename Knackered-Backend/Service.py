@@ -1,42 +1,21 @@
-#service.py
-
-#Class for storing information about once service for one team.
+# Class for storing information about once service for one team.
 
 from Login import Login
-from Check import Check
 
-
-class Service():
+class Service:
   
-    def __init__(self, aId, aType, aAddress, aUsername, aPassword):
-        self.id = aId
-        self.type = aType                          # this is the type of check to run on the address
-        self.address = aAddress                    # url/ip of the service
-        self.login = Login(aUsername, aPassword)   # Some services may need login information
-        self.checked = False                       # Has this already been checked?
-        self.result = Check()
+    def __init__(self, service_id, service_type, address, username, password):
+        self.id = service_id
+        self.type = service_type                 # this is the type of check to run on the address
+        self.address = address                   # url/ip of the service
+        self.login = Login(username, password)   # Some services may need login information
+        self.result = None
 
-    def getId(self):
-        return self.id
-
-    def getType(self):
-        return self.type
-
-    def getAddress(self):
-        return self.address
-
-    def getUsername(self):
-        return self.login.getUsername()
-
-    def getPassword(self):
-        return self.login.getPassword()
-
-    def addCheck(self, result):
-        if not self.checked:
-            self.result.setPassed(result)
-            self.checked = True
+    def add_check(self, result):
+        if result is None:
+            self.result = result
         else:
             print 'Warning: Service at' + self.address + 'has attempted to overwrite check'
 
-    def getCheck(self):
-        return self.result.isPassed()
+    def get_check(self):
+        return self.result
