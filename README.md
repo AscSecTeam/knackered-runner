@@ -2,24 +2,20 @@ Knackered
 ================
 The Knackered Engine is a security competition scoring engine.
 
-Designed with quick setup in mind, all that is needed is a linux server with LAMP and Python. Tested primarily on Ubuntu 12.04 but should run on just about anything.
+Designed with quick setup in mind, all that is needed is a linux server with a LAMP stack and Python. Tested primarily on Ubuntu 12.04 but should run on just about anything.
 
 Knackered's backend uses checks from the nagios-plugins package. (sudo apt-get install nagios-plugins)
 
-The system is also designed to be easily modifiable. All checks are made from Runner.py, calling scripts in the nagios-plugins directory. 
+The system is also designed to be easily modifiable. All checks are made from Runner.py, calling nagios-plugins scripts or your own custom-defined checks. 
 
 
 Installation and Setup
 ============
-Ensure MySQL 5+, Apache2, PHP 5.3+, and nagios-plugins are installed (and, if necessary, running)
+Ensure MySQL 5+, Apache2, PHP 5.3+, and nagios-plugins are installed
 
-Configure the database information at the top of Knackered-Backend/DataAccess.py, and in the web interface's config/db.php file.
+Configure the engine to meet your needs in Knackered-Backend/Conf.py.
 
-If nagios-plugins aren't in /usr/lib/nagios/plugins/, specify the directory at the top of Knackered-Backend/Runner.py
-
-If your webroot isn't /var/www/html/, configure that in Knackered-Backend/Main.py.
-
-scoring.sql contains the necessary MySQL database along with a test team.
+For testing, scoring.sql contains the necessary MySQL database along with a test team. In a production environment, an empty database will be generated for you if none exist.
 
 From there, use the web interface to configure Knackered-Backend for your competition.
 
