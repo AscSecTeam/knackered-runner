@@ -2,16 +2,15 @@
 # and use the ./scripts directory to make the checks and then return results of these checks.
 
 import subprocess
-
-# Specify plugin directory path here
-PLUGIN_DIRECTORY = "/usr/lib/nagios/plugins/"
+from Conf import Conf
 
 
 class Runner:
 
     def __init__(self, check_round):
+        self.config = Conf()
         self.round = check_round
-        self.plugin_dir = PLUGIN_DIRECTORY
+        self.plugin_dir = self.config.PLUGIN_DIRECTORY
         print "Runner initialized."
 
     def check_service(self, service):

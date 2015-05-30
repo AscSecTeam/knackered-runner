@@ -4,6 +4,9 @@ import sys
 
 from DataAccess import DataAccess
 from KnackeredRunner import KnackeredRunner
+from Conf import Conf
+
+config = Conf()
 
 check_round = 0
 if len(sys.argv) > 1 and sys.argv[1].isdigit():
@@ -16,4 +19,4 @@ if len(sys.argv) > 1 and sys.argv[1].isdigit():
 testDatabase = DataAccess()
 testDatabase.create_tables()
 
-knackered = KnackeredRunner(check_round, 'var/www/html/')
+knackered = KnackeredRunner(check_round, config.WEB_ROOT)

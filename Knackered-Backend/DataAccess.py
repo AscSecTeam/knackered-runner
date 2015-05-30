@@ -2,82 +2,20 @@
 
 import mysql.connector
 from mysql.connector import errorcode
-from collections import OrderedDict
 from Team import Team
-
-# Configure database connection here
-DATABASE_USERNAME = "root"
-DATABASE_PASSWORD = ""
-DATABASE_ADDRESS = "localhost"
-DATABASE_NAME = "scoring"
-
-DATABASE_SCHEMA = OrderedDict()  # Order of table creation is important
-# Foreign keys will not function correctly unless tables are created in this order
-
-DATABASE_SCHEMA['TEAMS'] = """
-    CREATE TABLE teams (
-        id INT PRIMARY KEY
-    )
-"""
-
-# TYPE field de-normalized for simplicity. (Could make serviceType table if desired.)
-DATABASE_SCHEMA['SERVICES'] = """
-    CREATE TABLE services (
-        id INT PRIMARY KEY  AUTO_INCREMENT,
-        teamId INT,
-        address VARCHAR(50),
-        type VARCHAR(5),
-        FOREIGN KEY (teamId) REFERENCES teams(id)
-    )
-"""
-
-DATABASE_SCHEMA['TEAMLOGINS'] = """
-    CREATE TABLE teamlogins (
-        teamId INT,
-        user_id int(11) NOT NULL AUTO_INCREMENT,
-        user_name varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-        user_password_hash varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-        PRIMARY KEY (user_id),
-        UNIQUE KEY user_name (user_name),
-        FOREIGN KEY (teamId) REFERENCES teams(id)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='user data';
-"""
-
-DATABASE_SCHEMA['CHECKS'] = """
-    CREATE TABLE checks (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        serviceId INT,
-        round INT,
-        result INT,
-        FOREIGN KEY (serviceId) REFERENCES services(id)
-    )
-"""
-
-DATABASE_SCHEMA['SERVICELOGINS'] = """
-    CREATE TABLE servicelogins (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        serviceId INT,
-        username varchar(100),
-        password varchar(100),
-        FOREIGN KEY (serviceId) REFERENCES services(id)
-    )
-"""
+from Conf import Conf
 
 
 class DataAccess():
 
     def __init__(self):
         # Store configured settings
-        self.username = DATABASE_USERNAME
-        self.password = DATABASE_PASSWORD
-        self.address = DATABASE_ADDRESS
-        self.dbname = DATABASE_NAME
-        self.schema = DATABASE_SCHEMA
+        self.config = Conf()
 
         # init database connection using settings above
-        self.connection = mysql.connector.connect(user=self.username,
-                                                  password=self.password,
-                                                  host=self.address)
+        self.connection = mysql.connector.connect(user=self.config.DATABASE_USERNAME,
+                                                  password= self.config.DATABASE_PASSWORD,
+                                                  host=self.config.DATABASE_ADDRESS)
         self.cursor = self.connection.cursor()
 
         # connect to the database
@@ -89,7 +27,7 @@ class DataAccess():
         teams_list = []
 
         # ensure we're using the right database
-        self.cursor.execute("USE " + self.dbname + ";")
+        self.cursor.execute("USE " + self.config.DATABASE_NAME + ";")
 
         # Get teams and create teamslist entries
         self.cursor.execute("SELECT * FROM teams;")
@@ -116,7 +54,7 @@ class DataAccess():
     def add_check_round(self, teams, check_round):
 
         # ensure we're using the right database
-        self.cursor.execute("USE " + self.dbname + ";")
+        self.cursor.execute("USE " + self.config.DATABASE_NAME + ";")
 
         query = "INSERT INTO checks (serviceId,round,result) VALUES"  # To be continued!
 
@@ -137,12 +75,12 @@ class DataAccess():
     # connect to the database
     def establish_connection(self):
         try:
-            self.connection.database = self.dbname
+            self.connection.database = self.config.DATABASE_NAME
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_BAD_DB_ERROR:
                 self.create_db()
                 print "Created database."
-                self.connection.database = self.dbname
+                self.connection.database = self.config.DATABASE_NAME
             else:
                 # if the connection is broken, rage-quit the program
                 print """
@@ -157,7 +95,7 @@ class DataAccess():
     # create the database
     def create_db(self):
         try:
-            self.cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(self.dbname))
+            self.cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(self.config.DATABASE_NAME))
             self.connection.commit()
 
         except mysql.connector.Error as err:
@@ -171,7 +109,7 @@ class DataAccess():
             exit(1)
 
     def create_tables(self):
-        for table_name, table in self.schema.items():
+        for table_name, table in self.config.DATABASE_SCHEMA.items():
             try:
                 self.cursor.execute(table)
                 self.connection.commit()
@@ -186,7 +124,7 @@ class DataAccess():
         teams = []
 
         # ensure we're using the right database
-        self.cursor.execute("USE " + self.dbname + ";")
+        self.cursor.execute("USE " + self.config.DATABASE_NAME + ";")
 
         # Execute query
         query = """SELECT services.teamId, checks.serviceId, COUNT(checks.id)
