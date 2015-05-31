@@ -1,0 +1,62 @@
+
+#statusbox {
+    width: 250px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 0 0 15px 5px;
+    padding: 10px;
+    float: left;
+    clear: left;
+}
+
+#content {
+    margin-left: 270px;
+    background: white;
+}
+
+.navbar-text {
+    padding-left: 10px;
+}
+
+.indented {
+    padding-left: 10px;
+}
+
+#scoreboard {
+    margin: auto;
+    max-width: 900px;
+}
+
+.modform {
+    display: none;
+}
+
+.modSubmit {
+    margin: 0 0 10px 40px;
+}
+
+marquee {
+    margin: -20px 0 -10px 0;
+}
+
+
+/* Color styles */
+
+.lightred {
+    background: #ffeeee;
+}
+.lightgreen {
+    background: #eeffee;
+}
+
+.black {
+    color: black;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
