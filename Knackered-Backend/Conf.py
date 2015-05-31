@@ -9,7 +9,7 @@ class Conf:
         self.PLUGIN_DIRECTORY = "/usr/lib/nagios/plugins/"
 
         self.DATABASE_USERNAME = "root"
-        self.DATABASE_PASSWORD = "rootsql"
+        self.DATABASE_PASSWORD = ""
         self.DATABASE_ADDRESS = "localhost"
         self.DATABASE_NAME = "scoring"
 
